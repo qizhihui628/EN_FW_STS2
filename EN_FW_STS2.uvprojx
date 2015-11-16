@@ -571,6 +571,11 @@
               <FileType>1</FileType>
               <FilePath>.\USR\EN_GPIO.c</FilePath>
             </File>
+            <File>
+              <FileName>Timer2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USR\Timer2.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

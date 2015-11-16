@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "main.h"
 #include "EN_GPIO.h"
+#include "Timer2.h"
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,20 +54,32 @@ int main(void)
        system_stm32f10x.c file
      */     
 	EN_GPIO_Init();
-	
+	Timer2_Init();
 
  
 
   /* Infinite loop */
   while (1)
   {
-		GPIO_SetBits(GPIOA,GPIO_Pin_4);
-		//GPIO_SetBits(GPIOB,GPIO_Pin_12);		//A.1 ON
-		GPIO_ResetBits(GPIOB,GPIO_Pin_12);		//A.1	OFF
-		GPIO_SetBits(GPIOB,GPIO_Pin_13);		//B.1	ON
-		//GPIO_SetBits(GPIOB,GPIO_Pin_14);		//A.2	ON
-		GPIO_ResetBits(GPIOB,GPIO_Pin_14);		//A.2	OFF
-		GPIO_SetBits(GPIOB,GPIO_Pin_15);		//B.2	ON
+		
+		
+		T100us_Delay(50000);		//DELAY 20S
+		Relay_Status_No_Init();
+		T100us_Delay(50000);
+		Relay_Status_No_Out();
+		T100us_Delay(50000);
+		Relay_Status_A_Out();
+		T100us_Delay(50000);		//DELAY 20S
+		Relay_Status_AtoB();
+		T100us_Delay(20);				//DELAY 20MS
+		Relay_Status_B_Out();
+		T100us_Delay(50000);		//DELAY 20S		
+		Relay_Status_BtoA();
+		T100us_Delay(20);				//DELAY 20MS	
+		Relay_Status_A_Out();		
+		//T100us_Delay(200000);		//DELAY 20S		
+
+
   }
 }
 
