@@ -576,6 +576,21 @@
               <FileType>1</FileType>
               <FilePath>.\USR\Timer2.c</FilePath>
             </File>
+            <File>
+              <FileName>Adc1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USR\Adc1.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USR\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>App.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USR\App.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

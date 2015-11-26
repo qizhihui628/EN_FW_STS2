@@ -10,7 +10,8 @@
 void EN_GPIO_Init(void);
 
 void Relay_Status_B_Out(void);
-void Relay_Status_A_Out(void);
+void Relay_Status_A_Out_1(void);
+void Relay_Status_A_Out_2(void);
 void Relay_Status_No_Out(void);
 void Relay_Status_No_Init(void);
 void Relay_Status_AtoB(void);
