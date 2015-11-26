@@ -71,15 +71,6 @@ void Relay_Status_B_Out_2(void)
 		GPIO_SetBits(GPIOB,Relay_B_2);
 }
 
-/*	A1 ON 	A2 OFF
-		B1 ON 	B2 OFF	*/
-void Relay_Status_No_Out(void)
-{
-		GPIO_ResetBits(GPIOB,Relay_A_2);
-		GPIO_ResetBits(GPIOB,Relay_B_2);
-		GPIO_SetBits(GPIOB,Relay_A_1);		
-		GPIO_SetBits(GPIOB,Relay_B_1);		
-}
 
 /*	A1 OFF 	A2 OFF
 		B1 OFF 	B2 OFF	*/
@@ -93,7 +84,7 @@ void Relay_Status_No_Init(void)
 
 /*	A1 OFF 	A2 OFF
 		B1 ON 	B2 OFF	*/
-void Relay_Status_A1toB2(void)
+void Relay_OFF_OFF_ON_OFF(void)
 {
 		GPIO_ResetBits(GPIOB,Relay_A_1);
 		GPIO_ResetBits(GPIOB,Relay_A_2);
@@ -103,7 +94,7 @@ void Relay_Status_A1toB2(void)
 
 /*	A1 ON 	A2 OFF
 		B1 ON 	B2 ON	*/
-void Relay_Status_B2toA1_1(void)
+void Relay_ON_OFF_ON_ON(void)
 {
 		GPIO_ResetBits(GPIOB,Relay_A_2);
 		GPIO_SetBits(GPIOB,Relay_A_1);
@@ -112,11 +103,33 @@ void Relay_Status_B2toA1_1(void)
 }
 /*	A1 ON 	A2 OFF
 		B1 ON 	B2 OFF	*/
-void Relay_Status_B2toA1_2(void)
+void Relay_ON_OFF_ON_OFF(void)
 {
 		GPIO_ResetBits(GPIOB,Relay_B_2);
 		GPIO_ResetBits(GPIOB,Relay_A_2);
 		GPIO_SetBits(GPIOB,Relay_A_1);
 		GPIO_SetBits(GPIOB,Relay_B_1);
+}
+
+/*	A1 ON 	A2 OFF
+		B1 OFF 	B2 OFF	*/
+void Relay_ON_OFF_OFF_OFF(void)
+{
+		GPIO_ResetBits(GPIOB,Relay_B_2);
+		GPIO_ResetBits(GPIOB,Relay_A_2);
+		GPIO_ResetBits(GPIOB,Relay_B_1);
+		GPIO_SetBits(GPIOB,Relay_A_1);
+
+}
+
+/*	A1 ON 	A2 ON
+		B1 ON 	B2 OFF	*/
+void Relay_ON_ON_ON_OFF(void)
+{
+		GPIO_ResetBits(GPIOB,Relay_B_2);
+		GPIO_SetBits(GPIOB,Relay_A_2);
+		GPIO_SetBits(GPIOB,Relay_B_1);
+		GPIO_SetBits(GPIOB,Relay_A_1);
+
 }
 

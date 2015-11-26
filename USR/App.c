@@ -3,6 +3,9 @@
 #include "math.h"
 #include "stdio.h"
 
+#define T1MS	1000
+#define T2MS	10
+
 __IO	u32 VRMS_A = 0;
 __IO	u32 VRMS_B = 0;
 __IO	u32 VRMS_OUT = 0;
@@ -11,6 +14,7 @@ __IO u8 Status_Flag = 0;
 __IO u8 SW_Flag = 0;
 __IO u8 VA_Flag = V_FAIL;
 __IO u8 VB_Flag = V_FAIL;
+
 
 enum Status_No{
 	STATUS_IDLE,
@@ -111,8 +115,8 @@ void STATUS_AOUT1_Pro(void)
 	}
 	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
 	{
-		Relay_Status_A1toB2();
-		T100us_Delay(20);
+		Relay_OFF_OFF_ON_OFF();
+		T100us_Delay(T2MS);
 		Status_Flag = STATUS_BOUT2;
 	}
 	else																							//Idle
@@ -136,7 +140,10 @@ void STATUS_AOUT2_Pro(void)
 	}
 	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
 	{
-		//Status_Flag = STATUS_BOUT2;
+		Relay_ON_ON_ON_OFF();
+		Relay_OFF_OFF_ON_OFF();
+		T100us_Delay(20);					//WAIT FOR 2MS			
+		Status_Flag = STATUS_BOUT2;
 	}
 	else																							//Idle
 	{
@@ -151,15 +158,18 @@ void STATUS_BOUT2_Pro(void)
 	Relay_Status_B_Out_2();
 	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Aout1
 	{
-		Relay_Status_B2toA1_1();	//A1 ON
-		T100us_Delay(200);				//WAIT FOR A1 READY
-		Relay_Status_B2toA1_2();	//CLOSE B1 B2						
-		T100us_Delay(20);					//WAIT FOR 2MS
+		Relay_ON_OFF_ON_ON();	//A1 ON
+		T100us_Delay(T1MS);				//WAIT FOR A1 READY
+		Relay_ON_OFF_ON_OFF();	//CLOSE B1 B2						
+		T100us_Delay(40);					//WAIT FOR 4MS
 		Status_Flag = STATUS_AOUT1;
 	}
 	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
 	{
-		//Status_Flag = STATUS_AOUT2;
+		Relay_ON_OFF_ON_ON();
+		Relay_ON_OFF_OFF_OFF();
+		T100us_Delay(20);					//WAIT FOR 2MS	
+		Status_Flag = STATUS_AOUT2;
 	}
 	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
 	{
@@ -179,10 +189,10 @@ void Status_Process(void)
 	if( SW_Flag == 0 )		//A for Pri
 	{
 		switch (Status_Flag){
-		case STATUS_IDLE:	STATUS_IDLE_Pro_SW0(); printf("IDLE\r\n");	break;
-		case STATUS_AOUT1:	STATUS_AOUT1_Pro(); printf("AOUT1\r\n"); break;
-		case STATUS_AOUT2:	STATUS_AOUT2_Pro(); printf("AOUT2\r\n"); break;
-		case STATUS_BOUT2:	STATUS_BOUT2_Pro(); printf("BOUT2\r\n"); break;
+		case STATUS_IDLE:	STATUS_IDLE_Pro_SW0(); break;
+		case STATUS_AOUT1:	STATUS_AOUT1_Pro();  break;
+		case STATUS_AOUT2:	STATUS_AOUT2_Pro();  break;
+		case STATUS_BOUT2:	STATUS_BOUT2_Pro();  break;
 		default:						break;
 		}
 	}

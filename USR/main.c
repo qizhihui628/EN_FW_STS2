@@ -75,8 +75,8 @@ int main(void)
   {
 		
 		Voltage_Check();
-		printf("VA is %d\r\n",VA_Flag);
-		printf("VB is %d\r\n",VB_Flag);
+		//printf("VA is %d\r\n",VA_Flag);
+		//printf("VB is %d\r\n",VB_Flag);
 		Status_Process();
 		
 		
