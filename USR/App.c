@@ -4,7 +4,7 @@
 #include "stdio.h"
 
 #define T1MS	1000
-#define T2MS	10
+#define T2MS	20
 
 __IO	u32 VRMS_A = 0;
 __IO	u32 VRMS_B = 0;
@@ -142,7 +142,7 @@ void STATUS_AOUT2_Pro(void)
 	{
 		Relay_ON_ON_ON_OFF();
 		Relay_OFF_OFF_ON_OFF();
-		T100us_Delay(20);					//WAIT FOR 2MS			
+		T100us_Delay(T2MS);					//WAIT FOR 2MS			
 		Status_Flag = STATUS_BOUT2;
 	}
 	else																							//Idle
@@ -161,14 +161,14 @@ void STATUS_BOUT2_Pro(void)
 		Relay_ON_OFF_ON_ON();	//A1 ON
 		T100us_Delay(T1MS);				//WAIT FOR A1 READY
 		Relay_ON_OFF_ON_OFF();	//CLOSE B1 B2						
-		T100us_Delay(40);					//WAIT FOR 4MS
+		T100us_Delay(T2MS);					//WAIT FOR 4MS
 		Status_Flag = STATUS_AOUT1;
 	}
 	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
 	{
 		Relay_ON_OFF_ON_ON();
 		Relay_ON_OFF_OFF_OFF();
-		T100us_Delay(20);					//WAIT FOR 2MS	
+		T100us_Delay(T2MS);					//WAIT FOR 2MS	
 		Status_Flag = STATUS_AOUT2;
 	}
 	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2

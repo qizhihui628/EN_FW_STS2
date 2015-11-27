@@ -74,14 +74,14 @@ int main(void)
   while (1)
   {
 	
-	
+		
 		Voltage_Check();
 		//printf("VA is %d\r\n",VA_Flag);
 		//printf("VB is %d\r\n",VB_Flag);
 		Status_Process();
 
 		
-#if 0			
+#if 0	
 		Relay_Status_A_Out_1();
 		T100us_Delay(50000);
 		Relay_Status_No_Init();
