@@ -126,7 +126,7 @@ void uart_init(u32 bound){
     USART_Cmd(USART1, ENABLE);                    //使能串口 
 
 }
-/*
+
 void USART1_IRQHandler(void)                	//串口1中断服务程序
 	{
 	u8 Res;
@@ -160,6 +160,6 @@ void USART1_IRQHandler(void)                	//串口1中断服务程序
 	OSIntExit();  											 
 #endif
 } 
-*/
+
 #endif	
 
