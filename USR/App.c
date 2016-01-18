@@ -2,6 +2,7 @@
 #include "Adc1.h"
 #include "math.h"
 #include "stdio.h"
+#include "EN_GPIO.h"
 
 #define T1MS	1000
 #define T2MS	20
@@ -211,6 +212,25 @@ void Status_Process(void)
 			//All Relays off
 	}
 	
+}
+
+
+void SW_Status_Check(void)
+{
+	
+	if(SW_Flag != GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3))
+	{
+		T100us_Delay(20);		//delay for 2ms
+		if(SW_Flag != GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3))
+		{
+			SW_Flag = GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3);
+		}
+	}
+	else
+	{
+	
+	}
+
 }
 
 

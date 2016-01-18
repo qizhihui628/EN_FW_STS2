@@ -21,5 +21,6 @@ extern __IO u8 VA_Flag;
 extern __IO u8 VB_Flag;
 
 extern void Voltage_Check(void);
+extern void Status_Process(void);
 
 #endif
