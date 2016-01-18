@@ -22,5 +22,7 @@ extern __IO u8 VB_Flag;
 
 extern void Voltage_Check(void);
 extern void Status_Process(void);
-
+extern void Signal_Relay_OFF(void);
+extern void Signal_Relay_ON(void);
+extern void SW_Status_Check(void);
 #endif

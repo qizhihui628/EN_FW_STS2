@@ -3,6 +3,7 @@
 #include "math.h"
 #include "stdio.h"
 #include "EN_GPIO.h"
+#include "Timer2.h"
 
 #define T1MS	1000
 #define T2MS	20
@@ -51,10 +52,14 @@ void Voltage_Check(void)
 	if(	(VRMS_A < VRMS_MIN) || (VRMS_A > VRMS_MAX)	|| ( lv_A > Z_LIMIT) )			//VA error
 	{
 		VA_Flag = V_FAIL;
+		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
+		LED_ON(LED_A_1_R_Group ,LED_A_1_R );
 	}
 	else																																				//VA OK
 	{
 		VA_Flag = V_OK;
+		LED_ON(LED_A_1_G_Group ,LED_A_1_G );
+		LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
 	}
 
 
@@ -71,10 +76,14 @@ void Voltage_Check(void)
 	if(	(VRMS_B < VRMS_MIN) || (VRMS_B > VRMS_MAX)	|| ( lv_B > Z_LIMIT) )			//VB error
 	{
 		VB_Flag = V_FAIL;
+		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
+		LED_ON(LED_B_1_R_Group ,LED_B_1_R );
 	}
 	else																																				//VB OK
 	{
 		VB_Flag = V_OK;
+		LED_ON(LED_B_1_G_Group ,LED_B_1_G );
+		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
 	}
 	
 }
@@ -98,6 +107,10 @@ void STATUS_IDLE_Pro_SW0(void)
 	else																							//Idle
 	{
 		Status_Flag = STATUS_IDLE;
+		LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+		LED_OFF(LED_A_2_R_Group ,LED_A_2_R );		
+		LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+		LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
 	}
 
 }
@@ -106,6 +119,10 @@ void STATUS_IDLE_Pro_SW0(void)
 void STATUS_AOUT1_Pro(void)
 {
 	Relay_Status_A_Out_1();
+	LED_ON(LED_A_2_G_Group ,LED_A_2_G );
+	LED_OFF(LED_A_2_R_Group ,LED_A_2_R );		
+	LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
 	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Aout1
 	{
 		Status_Flag = STATUS_AOUT1;
@@ -131,6 +148,10 @@ void STATUS_AOUT1_Pro(void)
 void STATUS_AOUT2_Pro(void)
 {
 	Relay_Status_A_Out_2();
+	LED_ON(LED_A_2_G_Group ,LED_A_2_G );
+	LED_OFF(LED_A_2_R_Group ,LED_A_2_R );
+	LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );	
 	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Aout1
 	{
 		Status_Flag = STATUS_AOUT1;
@@ -157,6 +178,10 @@ void STATUS_AOUT2_Pro(void)
 void STATUS_BOUT2_Pro(void)
 {
 	Relay_Status_B_Out_2();
+	LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+	LED_OFF(LED_A_2_R_Group ,LED_A_2_R );	
+	LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+	LED_ON(LED_B_2_R_Group ,LED_B_2_R );
 	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Aout1
 	{
 		Relay_ON_OFF_ON_ON();	//A1 ON
@@ -230,6 +255,19 @@ void SW_Status_Check(void)
 	{
 	
 	}
+
+}
+
+//relay
+void Signal_Relay_ON(void)
+{
+	GPIO_SetBits(GPIOA,GPIO_Pin_8);
+
+}
+
+void Signal_Relay_OFF(void)
+{
+	GPIO_ResetBits(GPIOA,GPIO_Pin_8);
 
 }
 
