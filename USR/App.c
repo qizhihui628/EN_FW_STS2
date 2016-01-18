@@ -92,6 +92,10 @@ void Voltage_Check(void)
 void STATUS_IDLE_Pro_SW0(void)
 {
 	Relay_Status_No_Init();
+	LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+	LED_OFF(LED_A_2_R_Group ,LED_A_2_R );		
+	LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
 	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Aout1
 	{
 		Status_Flag = STATUS_AOUT1;
@@ -107,16 +111,12 @@ void STATUS_IDLE_Pro_SW0(void)
 	else																							//Idle
 	{
 		Status_Flag = STATUS_IDLE;
-		LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
-		LED_OFF(LED_A_2_R_Group ,LED_A_2_R );		
-		LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
-		LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
 	}
 
 }
 
 
-void STATUS_AOUT1_Pro(void)
+void STATUS_AOUT1_Pro_SW0(void)
 {
 	Relay_Status_A_Out_1();
 	LED_ON(LED_A_2_G_Group ,LED_A_2_G );
@@ -145,7 +145,7 @@ void STATUS_AOUT1_Pro(void)
 }
 
 
-void STATUS_AOUT2_Pro(void)
+void STATUS_AOUT2_Pro_SW0(void)
 {
 	Relay_Status_A_Out_2();
 	LED_ON(LED_A_2_G_Group ,LED_A_2_G );
@@ -175,7 +175,7 @@ void STATUS_AOUT2_Pro(void)
 }
 
 
-void STATUS_BOUT2_Pro(void)
+void STATUS_BOUT2_Pro_SW0(void)
 {
 	Relay_Status_B_Out_2();
 	LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
@@ -210,26 +210,148 @@ void STATUS_BOUT2_Pro(void)
 
 
 
+
+
+void STATUS_IDLE_Pro_SW1(void)
+{
+	Relay_Status_No_Init();
+	LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+	LED_OFF(LED_A_2_R_Group ,LED_A_2_R );		
+	LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
+	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Bout1
+	{
+		Status_Flag = STATUS_BOUT1;
+	}
+	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	{
+		Status_Flag = STATUS_AOUT2;
+	}
+	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	{
+		Status_Flag = STATUS_BOUT2;
+	}
+	else																							//Idle
+	{
+		Status_Flag = STATUS_IDLE;
+	}
+
+}
+
+
+void STATUS_BOUT1_Pro_SW1(void)
+{
+	Relay_Status_B_Out_1();
+	LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+	LED_OFF(LED_A_2_R_Group ,LED_A_2_R );		
+	LED_ON(LED_B_2_G_Group ,LED_B_2_G );
+	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
+	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Bout1
+	{
+		Status_Flag = STATUS_BOUT1;
+	}
+	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	{
+		Status_Flag = STATUS_BOUT2;
+	}
+	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	{
+		Relay_ON_OFF_OFF_OFF();
+		T100us_Delay(T2MS);
+		Status_Flag = STATUS_AOUT2;
+	}
+	else																							//Idle
+	{
+		Status_Flag = STATUS_IDLE;
+	}
+
+}
+
+
+void STATUS_BOUT2_Pro_SW1(void)
+{
+	Relay_Status_B_Out_2();
+	LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+	LED_OFF(LED_A_2_R_Group ,LED_A_2_R );
+	LED_ON(LED_B_2_G_Group ,LED_B_2_G );
+	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );	
+	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Bout1
+	{
+		Status_Flag = STATUS_BOUT1;
+	}
+	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	{
+		Status_Flag = STATUS_BOUT2;
+	}
+	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	{
+		Relay_ON_OFF_ON_ON();
+		Relay_ON_OFF_OFF_OFF();
+		T100us_Delay(T2MS);					//WAIT FOR 2MS			
+		Status_Flag = STATUS_AOUT2;
+	}
+	else																							//Idle
+	{
+		Status_Flag = STATUS_IDLE;
+	}
+
+}
+
+
+void STATUS_AOUT2_Pro_SW1(void)
+{
+	Relay_Status_A_Out_2();
+	LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+	LED_ON(LED_A_2_R_Group ,LED_A_2_R );	
+	LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
+	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Bout1
+	{
+		Relay_ON_ON_ON_OFF();	//
+		T100us_Delay(T1MS);				//
+		Relay_ON_OFF_ON_OFF();	//				
+		T100us_Delay(T2MS);					//
+		Status_Flag = STATUS_BOUT1;
+	}
+	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	{
+		Relay_ON_ON_ON_OFF();
+		Relay_OFF_OFF_ON_OFF();
+		T100us_Delay(T2MS);					//WAIT FOR 2MS	
+		Status_Flag = STATUS_BOUT2;
+	}
+	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	{
+		Status_Flag = STATUS_AOUT2;
+	}
+	else																							//Idle
+	{
+		Status_Flag = STATUS_IDLE;
+	}
+
+}
+
+
 void Status_Process(void)
 {
 	if( SW_Flag == 0 )		//A for Pri
 	{
 		switch (Status_Flag){
 		case STATUS_IDLE:	STATUS_IDLE_Pro_SW0(); break;
-		case STATUS_AOUT1:	STATUS_AOUT1_Pro();  break;
-		case STATUS_AOUT2:	STATUS_AOUT2_Pro();  break;
-		case STATUS_BOUT2:	STATUS_BOUT2_Pro();  break;
-		default:						break;
+		case STATUS_AOUT1:	STATUS_AOUT1_Pro_SW0();  break;
+		case STATUS_AOUT2:	STATUS_AOUT2_Pro_SW0();  break;
+		case STATUS_BOUT2:	STATUS_BOUT2_Pro_SW0();  break;
+		default:		Status_Flag = STATUS_IDLE;			break;
 		}
 	}
 	else if(SW_Flag == 1)	//B for Pri
 	{
 		switch (Status_Flag){
-		case STATUS_IDLE:		break;
-		case STATUS_AOUT2:	break;
-		case STATUS_BOUT1:	break;
-		case STATUS_BOUT2:	break;
-		default:						break;
+		case STATUS_IDLE:		STATUS_IDLE_Pro_SW1();break;
+		case STATUS_AOUT2:	STATUS_AOUT2_Pro_SW1();break;
+		case STATUS_BOUT1:	STATUS_BOUT1_Pro_SW1();break;
+		case STATUS_BOUT2:	STATUS_BOUT2_Pro_SW1();break;
+		default:		Status_Flag = STATUS_IDLE;			break;
 		}	
 	}
 	else

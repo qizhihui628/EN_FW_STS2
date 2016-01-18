@@ -62,23 +62,23 @@ int main(void)
 
 	
 	EN_GPIO_Init();
+	Relay_Status_No_Init();
+	Signal_Relay_OFF();
+	LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
+	LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
+	LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+	LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+	LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
+	LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
+	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
+	LED_OFF(LED_A_2_R_Group ,LED_A_2_R );
+	LED_OFF(LED_NS_Group ,LED_NS  );
+	LED_OFF(LED_ER_Group ,LED_ER );
 	Timer2_Init();
 	ADC1_Init();
 	uart_init(115200);
 	printf("Helloworld!!\r\n");
-	Relay_Status_No_Init();
 
-	
-		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
-		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
-		LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
-		LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
-		LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
-		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
-		LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
-		LED_OFF(LED_A_2_R_Group ,LED_A_2_R );
-		LED_OFF(LED_NS_Group ,LED_NS  );
-		LED_OFF(LED_ER_Group ,LED_ER );
 	//T100us_Delay(50000);
 	
   /* Infinite loop */
