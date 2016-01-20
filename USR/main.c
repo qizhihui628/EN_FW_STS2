@@ -90,7 +90,11 @@ int main(void)
 		//printf("VA is %d\r\n",VA_Flag);
 		//printf("VB is %d\r\n",VB_Flag);
 		Status_Process();
-		SW_Status_Check();
+		if( t1s_SW_counter < 500 )		//task tick.
+		{
+			t1s_SW_counter = 501;
+			SW_Status_Check();
+		}
 #if 0	
 if(SW_Flag)	
 {

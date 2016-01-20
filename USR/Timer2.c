@@ -1,6 +1,7 @@
 #include "Timer2.h"
 __IO u32 t100us_counter;
 
+__IO u32 t1s_SW_counter;
 
 void Timer2_Init(void)
 {
@@ -47,6 +48,12 @@ void TIM2_IRQHandler(void)
 		if(t100us_counter > 0X0FFFFFFF)		//100us*10000 = 1s
 		{
 			t100us_counter = 0;
+		}
+		t1s_SW_counter++;
+		if(t1s_SW_counter > 10000)			//100us*10000 = 1s
+		{
+			t1s_SW_counter = 0;
+		
 		}
 	}
 	

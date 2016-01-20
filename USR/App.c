@@ -11,6 +11,7 @@
 __IO	u32 VRMS_A = 0;
 __IO	u32 VRMS_B = 0;
 __IO	u32 VRMS_OUT = 0;
+__IO  int32_t sync_counter = 0;
 
 __IO u8 Status_Flag = 0;
 __IO u8 SW_Flag = 0;
@@ -37,6 +38,8 @@ void Voltage_Check(void)
 	u32 temp1 =0;
 	u32 temp2 =0;
 	u32 temp3 =0;	
+	int32_t syn_temp1 = 10000;		//default value
+	int32_t syn_temp2 = 10000;
 
 
 	for(i=0;i<BUFFER_SIZE;)																											// Check VA	
@@ -45,6 +48,13 @@ void Voltage_Check(void)
 			if(( ADCConvertedValue[i] > Z_MIN )&&( ADCConvertedValue[i] < Z_MAX ))		// low voltage counter.
 			{
 				lv_A++;
+			}
+			if(syn_temp1 == 10000)
+			{
+				if(	((ADCConvertedValue[i] - MID_VALUE) < 20) && ((ADCConvertedValue[i] - MID_VALUE) > -20) )	//20 according the zero detector value
+				{
+					syn_temp1 = i;
+				}
 			}
 			i = i+3;
 		}
@@ -70,6 +80,13 @@ void Voltage_Check(void)
 			{
 				lv_B++;
 			}
+			if(syn_temp2 == 10000)
+			{
+				if(	((ADCConvertedValue[i] - MID_VALUE) < 20) && ((ADCConvertedValue[i] - MID_VALUE) > -20) )
+				{
+					syn_temp2 = i;
+				}
+			}
 			i = i+3;
 		}
 	VRMS_B = sqrt(temp2/(BUFFER_SIZE/3));
@@ -85,7 +102,35 @@ void Voltage_Check(void)
 		LED_ON(LED_B_1_G_Group ,LED_B_1_G );
 		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
 	}
-	
+	//printf("1:%d\r\n",syn_temp1);
+	//printf("2:%d\r\n",syn_temp2);
+	if(sync_counter > 100)			//counter max
+	{
+		sync_counter = 100;
+	}
+	else if(sync_counter < 0)		//counter minimal
+	{
+		sync_counter = 0;
+	}
+	else												//counter scale
+	{
+		if((syn_temp1 - syn_temp2> 30) || (syn_temp1-syn_temp2 < -30 ))		//30 -> according the phase shift degree.
+		{
+			sync_counter++;
+		}
+		else
+		{
+			sync_counter--;
+		}
+	}
+	if((sync_counter > 70) && (VB_Flag == V_OK) && (VA_Flag == V_OK))		//delta value for phase shift.
+	{
+		LED_ON(LED_NS_Group ,LED_NS );																	//not sync
+	}
+	else if(sync_counter < 30)
+	{
+		LED_OFF(LED_NS_Group ,LED_NS );																	//sync or single Power.
+	}
 }
 
 
