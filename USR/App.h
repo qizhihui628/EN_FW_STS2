@@ -25,4 +25,5 @@ extern void Status_Process(void);
 extern void Signal_Relay_OFF(void);
 extern void Signal_Relay_ON(void);
 extern void SW_Status_Check(void);
+extern void Power12V_Check(void);
 #endif

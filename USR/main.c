@@ -85,7 +85,7 @@ int main(void)
   while (1)
   {
 	
-		
+		Power12V_Check();
 		Voltage_Check();
 		//printf("VA is %d\r\n",VA_Flag);
 		//printf("VB is %d\r\n",VB_Flag);

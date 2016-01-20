@@ -29,6 +29,20 @@ enum Status_No{
 };
 
 
+void Power12V_Check(void)
+{
+	if( (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)) && (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)) )
+	{
+		Signal_Relay_OFF();
+		LED_OFF(LED_ER_Group,LED_ER);
+	}
+	else
+	{
+		Signal_Relay_ON();
+		LED_ON(LED_ER_Group,LED_ER);
+	}
+}
+
 void Voltage_Check(void)
 {
 	u32 i = 0;
