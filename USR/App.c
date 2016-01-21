@@ -31,13 +31,13 @@ enum Status_No{
 void STATUS_BOUT1_Pro_SW0(void)
 {
 		Relay_ON_OFF_ON_OFF();	//CLOSE B1 B2						
-		T100us_Delay(T2MS);					//WAIT FOR 4MS
+		T100us_Delay(70);					//WAIT FOR 5MS
 		Status_Flag = STATUS_AOUT1;
 }
 void STATUS_AOUT1_Pro_SW1(void)
 {
 		Relay_ON_OFF_ON_OFF();	//CLOSE B1 B2						
-		T100us_Delay(T2MS);					//WAIT FOR 4MS
+		T100us_Delay(70);					//WAIT FOR 5MS
 		Status_Flag = STATUS_BOUT1;
 }
 void Power12V_Check(void)
