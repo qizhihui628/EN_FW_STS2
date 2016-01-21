@@ -6,7 +6,7 @@
 #include "Timer2.h"
 
 #define T1MS	1000
-#define T2MS	20
+#define T2MS	40
 
 __IO	u32 VRMS_A = 0;
 __IO	u32 VRMS_B = 0;
@@ -28,7 +28,18 @@ enum Status_No{
 	
 };
 
-
+void STATUS_BOUT1_Pro_SW0(void)
+{
+		Relay_ON_OFF_ON_OFF();	//CLOSE B1 B2						
+		T100us_Delay(T2MS);					//WAIT FOR 4MS
+		Status_Flag = STATUS_AOUT1;
+}
+void STATUS_AOUT1_Pro_SW1(void)
+{
+		Relay_ON_OFF_ON_OFF();	//CLOSE B1 B2						
+		T100us_Delay(T2MS);					//WAIT FOR 4MS
+		Status_Flag = STATUS_BOUT1;
+}
 void Power12V_Check(void)
 {
 	if( (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)) && (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)) )
@@ -157,14 +168,17 @@ void STATUS_IDLE_Pro_SW0(void)
 	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
 	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Aout1
 	{
+		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_AOUT1;
 	}
 	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
 	{
+		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_AOUT2;
 	}
 	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
 	{
+		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_BOUT2;
 	}
 	else																							//Idle
@@ -280,14 +294,17 @@ void STATUS_IDLE_Pro_SW1(void)
 	LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
 	if((VA_Flag == V_OK)&&(VB_Flag == V_OK))					//Bout1
 	{
+		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_BOUT1;
 	}
 	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
 	{
+		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_AOUT2;
 	}
 	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
 	{
+		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_BOUT2;
 	}
 	else																							//Idle
@@ -400,6 +417,7 @@ void Status_Process(void)
 		case STATUS_AOUT1:	STATUS_AOUT1_Pro_SW0();  break;
 		case STATUS_AOUT2:	STATUS_AOUT2_Pro_SW0();  break;
 		case STATUS_BOUT2:	STATUS_BOUT2_Pro_SW0();  break;
+		case STATUS_BOUT1:STATUS_BOUT1_Pro_SW0();	break;
 		default:		Status_Flag = STATUS_IDLE;			break;
 		}
 	}
@@ -410,6 +428,7 @@ void Status_Process(void)
 		case STATUS_AOUT2:	STATUS_AOUT2_Pro_SW1();break;
 		case STATUS_BOUT1:	STATUS_BOUT1_Pro_SW1();break;
 		case STATUS_BOUT2:	STATUS_BOUT2_Pro_SW1();break;
+		case STATUS_AOUT1:	STATUS_AOUT1_Pro_SW1();  break;
 		default:		Status_Flag = STATUS_IDLE;			break;
 		}	
 	}

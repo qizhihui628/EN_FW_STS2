@@ -84,7 +84,6 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-	
 		Power12V_Check();
 		Voltage_Check();
 		//printf("VA is %d\r\n",VA_Flag);
@@ -95,6 +94,7 @@ int main(void)
 			t1s_SW_counter = 501;
 			SW_Status_Check();
 		}
+		
 #if 0	
 if(SW_Flag)	
 {
