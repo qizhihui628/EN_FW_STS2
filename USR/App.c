@@ -7,6 +7,12 @@
 
 #define T1MS	1000
 #define T2MS	40
+#define VRMS_COUNTER_Max 5000			//4S to get the RMS Voltage.
+
+__IO	u32 VRMS_A_Total = 0;
+__IO	u32 VRMS_B_Total = 0;
+__IO	u32 VRMS_A_counter = 0;
+__IO	u32 VRMS_B_counter = 0;
 
 __IO	u32 VRMS_A = 0;
 __IO	u32 VRMS_B = 0;
@@ -65,6 +71,8 @@ void Voltage_Check(void)
 	u32 temp3 =0;	
 	int32_t syn_temp1 = 10000;		//default value
 	int32_t syn_temp2 = 10000;
+	u32 VRMS_A_temp = 0;
+	u32 VRMS_B_temp = 0;
 
 
 	for(i=0;i<BUFFER_SIZE;)																											// Check VA	
@@ -83,7 +91,16 @@ void Voltage_Check(void)
 			}
 			i = i+3;
 		}
-	VRMS_A = sqrt(temp1/(BUFFER_SIZE/3));
+	VRMS_A_temp = sqrt(temp1/(BUFFER_SIZE/3));
+		VRMS_A_Total = VRMS_A_Total + VRMS_A_temp;
+		VRMS_A_counter ++ ;
+		if(VRMS_A_counter > VRMS_COUNTER_Max)
+		{
+				VRMS_A_counter = 0;
+			VRMS_A = VRMS_A_Total/VRMS_COUNTER_Max;
+			printf("A:%d\r\n",VRMS_A);
+				VRMS_A_Total = 0;
+		}
 	if(	(VRMS_A < VRMS_MIN) || (VRMS_A > VRMS_MAX)	|| ( lv_A > Z_LIMIT) )			//VA error
 	{
 		VA_Flag = V_FAIL;
@@ -114,7 +131,16 @@ void Voltage_Check(void)
 			}
 			i = i+3;
 		}
-	VRMS_B = sqrt(temp2/(BUFFER_SIZE/3));
+	VRMS_B_temp = sqrt(temp2/(BUFFER_SIZE/3));
+		VRMS_B_Total = VRMS_B_Total + VRMS_B_temp;
+		VRMS_B_counter ++ ;
+		if(VRMS_B_counter > VRMS_COUNTER_Max)
+		{
+				VRMS_B_counter = 0;
+			VRMS_B = VRMS_B_Total/VRMS_COUNTER_Max;
+			printf("B:%d\r\n",VRMS_B);
+				VRMS_B_Total = 0;
+		}
 	if(	(VRMS_B < VRMS_MIN) || (VRMS_B > VRMS_MAX)	|| ( lv_B > Z_LIMIT) )			//VB error
 	{
 		VB_Flag = V_FAIL;
