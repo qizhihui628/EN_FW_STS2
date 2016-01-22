@@ -6,9 +6,11 @@
 #include "Timer2.h"
 
 #define T1MS	1000
-#define T2MS	40
+#define T2MS_MAX	50
+#define T2MS_MIN 	20
 #define VRMS_COUNTER_Max 5000			//4S to get the RMS Voltage.
 
+__IO	u32 T2MS = T2MS_MIN;
 __IO	u32 VRMS_A_Total = 0;
 __IO	u32 VRMS_B_Total = 0;
 __IO	u32 VRMS_A_counter = 0;
@@ -21,8 +23,8 @@ __IO  int32_t sync_counter = 0;
 
 __IO u8 Status_Flag = 0;
 __IO u8 SW_Flag = 0;
-__IO u8 VA_Flag = V_FAIL;
-__IO u8 VB_Flag = V_FAIL;
+__IO u8 VA_Flag = V_FAIL_1;
+__IO u8 VB_Flag = V_FAIL_1;
 
 
 enum Status_No{
@@ -36,13 +38,13 @@ enum Status_No{
 
 void STATUS_BOUT1_Pro_SW0(void)
 {
-		Relay_ON_OFF_ON_OFF();	//CLOSE B1 B2						
+		Relay_ON_OFF_OFF_OFF();	//CLOSE B1 B2						
 		T100us_Delay(70);					//WAIT FOR 5MS
 		Status_Flag = STATUS_AOUT1;
 }
 void STATUS_AOUT1_Pro_SW1(void)
 {
-		Relay_ON_OFF_ON_OFF();	//CLOSE B1 B2						
+		Relay_OFF_OFF_ON_OFF();	//CLOSE B1 B2						
 		T100us_Delay(70);					//WAIT FOR 5MS
 		Status_Flag = STATUS_BOUT1;
 }
@@ -101,13 +103,19 @@ void Voltage_Check(void)
 			printf("A:%d\r\n",VRMS_A);
 				VRMS_A_Total = 0;
 		}
-	if(	(VRMS_A < VRMS_MIN) || (VRMS_A > VRMS_MAX)	|| ( lv_A > Z_LIMIT) )			//VA error
+	if ( lv_A > Z_LIMIT) 		//VA drop off error
 	{
-		VA_Flag = V_FAIL;
+		VA_Flag = V_FAIL_1;
 		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
 		LED_ON(LED_A_1_R_Group ,LED_A_1_R );
 	}
-	else																																				//VA OK
+	else if ((VRMS_A < VRMS_MIN_L) || (VRMS_A > VRMS_MAX_H))		//V rms error need to bigger the delay time
+	{
+		VA_Flag = V_FAIL_2;
+		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
+		LED_ON(LED_A_1_R_Group ,LED_A_1_R );
+	}
+	else if((VRMS_A >= VRMS_MIN_H) && (VRMS_A <= VRMS_MAX_L))																																				//VA OK
 	{
 		VA_Flag = V_OK;
 		LED_ON(LED_A_1_G_Group ,LED_A_1_G );
@@ -141,13 +149,19 @@ void Voltage_Check(void)
 			printf("B:%d\r\n",VRMS_B);
 				VRMS_B_Total = 0;
 		}
-	if(	(VRMS_B < VRMS_MIN) || (VRMS_B > VRMS_MAX)	|| ( lv_B > Z_LIMIT) )			//VB error
+	if ( lv_B > Z_LIMIT)			//VB error
 	{
-		VB_Flag = V_FAIL;
+		VB_Flag = V_FAIL_1;
 		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
 		LED_ON(LED_B_1_R_Group ,LED_B_1_R );
 	}
-	else																																				//VB OK
+	else if((VRMS_B < VRMS_MIN_L) || (VRMS_B > VRMS_MAX_H))		//V rms error need to bigger the delay time
+	{
+		VB_Flag = V_FAIL_2;
+		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
+		LED_ON(LED_B_1_R_Group ,LED_B_1_R );
+	}
+	else if((VRMS_B >= VRMS_MIN_H) && (VRMS_B <= VRMS_MAX_L))																																			//VB OK
 	{
 		VB_Flag = V_OK;
 		LED_ON(LED_B_1_G_Group ,LED_B_1_G );
@@ -197,12 +211,12 @@ void STATUS_IDLE_Pro_SW0(void)
 		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_AOUT1;
 	}
-	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
 	{
 		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_AOUT2;
 	}
-	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
 	{
 		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_BOUT2;
@@ -226,15 +240,23 @@ void STATUS_AOUT1_Pro_SW0(void)
 	{
 		Status_Flag = STATUS_AOUT1;
 	}
-	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
 	{
 		Status_Flag = STATUS_AOUT2;
 	}
-	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
 	{
-		Relay_OFF_OFF_ON_OFF();
-		T100us_Delay(T2MS);
-		Status_Flag = STATUS_BOUT2;
+			Relay_OFF_OFF_ON_OFF();
+			if(VA_Flag == V_FAIL_1)
+			{
+				T100us_Delay(T2MS_MIN);
+			}
+			else
+			{
+				T100us_Delay(T2MS_MAX);
+			}
+			Status_Flag = STATUS_BOUT2;
+
 	}
 	else																							//Idle
 	{
@@ -255,16 +277,23 @@ void STATUS_AOUT2_Pro_SW0(void)
 	{
 		Status_Flag = STATUS_AOUT1;
 	}
-	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
 	{
 		Status_Flag = STATUS_AOUT2;
 	}
-	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
 	{
-		Relay_ON_ON_ON_OFF();
-		Relay_OFF_OFF_ON_OFF();
-		T100us_Delay(T2MS);					//WAIT FOR 2MS			
-		Status_Flag = STATUS_BOUT2;
+			Relay_ON_ON_ON_OFF();
+			Relay_OFF_OFF_ON_OFF();
+			if(VA_Flag == V_FAIL_1)
+			{
+				T100us_Delay(T2MS_MIN);
+			}
+			else
+			{
+				T100us_Delay(T2MS_MAX);
+			}		
+			Status_Flag = STATUS_BOUT2;
 	}
 	else																							//Idle
 	{
@@ -285,18 +314,25 @@ void STATUS_BOUT2_Pro_SW0(void)
 	{
 		Relay_ON_OFF_ON_ON();	//A1 ON
 		T100us_Delay(T1MS);				//WAIT FOR A1 READY
-		Relay_ON_OFF_ON_OFF();	//CLOSE B1 B2						
-		T100us_Delay(T2MS);					//WAIT FOR 4MS
+		Relay_ON_OFF_OFF_OFF();	//CLOSE B1 B2						
+		T100us_Delay(T2MS_MAX);					//WAIT FOR 4MS
 		Status_Flag = STATUS_AOUT1;
 	}
-	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
 	{
 		Relay_ON_OFF_ON_ON();
 		Relay_ON_OFF_OFF_OFF();
-		T100us_Delay(T2MS);					//WAIT FOR 2MS	
+		if(VB_Flag == V_FAIL_1)
+		{
+			T100us_Delay(T2MS_MIN);
+		}
+		else
+		{
+			T100us_Delay(T2MS_MAX);
+		}		
 		Status_Flag = STATUS_AOUT2;
 	}
-	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
 	{
 		Status_Flag = STATUS_BOUT2;
 	}
@@ -323,12 +359,12 @@ void STATUS_IDLE_Pro_SW1(void)
 		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_BOUT1;
 	}
-	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
 	{
 		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_AOUT2;
 	}
-	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
 	{
 		T100us_Delay(T2MS);	
 		Status_Flag = STATUS_BOUT2;
@@ -352,14 +388,21 @@ void STATUS_BOUT1_Pro_SW1(void)
 	{
 		Status_Flag = STATUS_BOUT1;
 	}
-	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
 	{
 		Status_Flag = STATUS_BOUT2;
 	}
-	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
 	{
 		Relay_ON_OFF_OFF_OFF();
-		T100us_Delay(T2MS);
+		if( VB_Flag == V_FAIL_1)
+		{
+			T100us_Delay(T2MS_MIN);
+		}
+		else
+		{
+			T100us_Delay(T2MS_MAX);
+		}
 		Status_Flag = STATUS_AOUT2;
 	}
 	else																							//Idle
@@ -381,15 +424,22 @@ void STATUS_BOUT2_Pro_SW1(void)
 	{
 		Status_Flag = STATUS_BOUT1;
 	}
-	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
 	{
 		Status_Flag = STATUS_BOUT2;
 	}
-	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
 	{
 		Relay_ON_OFF_ON_ON();
 		Relay_ON_OFF_OFF_OFF();
-		T100us_Delay(T2MS);					//WAIT FOR 2MS			
+		if( VB_Flag == V_FAIL_1)
+		{
+			T100us_Delay(T2MS_MIN);
+		}
+		else
+		{
+			T100us_Delay(T2MS_MAX);
+		}			
 		Status_Flag = STATUS_AOUT2;
 	}
 	else																							//Idle
@@ -411,18 +461,25 @@ void STATUS_AOUT2_Pro_SW1(void)
 	{
 		Relay_ON_ON_ON_OFF();	//
 		T100us_Delay(T1MS);				//
-		Relay_ON_OFF_ON_OFF();	//				
-		T100us_Delay(T2MS);					//
+		Relay_OFF_OFF_ON_OFF();	//				
+		T100us_Delay(T2MS_MAX);					//
 		Status_Flag = STATUS_BOUT1;
 	}
-	else if((VA_Flag == V_FAIL)&&(VB_Flag == V_OK))		//Bout2
+	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
 	{
 		Relay_ON_ON_ON_OFF();
 		Relay_OFF_OFF_ON_OFF();
-		T100us_Delay(T2MS);					//WAIT FOR 2MS	
+		if( VA_Flag == V_FAIL_1)
+		{
+			T100us_Delay(T2MS_MIN);
+		}
+		else
+		{
+			T100us_Delay(T2MS_MAX);
+		}
 		Status_Flag = STATUS_BOUT2;
 	}
-	else if((VA_Flag == V_OK)&&(VB_Flag == V_FAIL))		//Aout2
+	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
 	{
 		Status_Flag = STATUS_AOUT2;
 	}

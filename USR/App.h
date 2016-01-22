@@ -2,14 +2,17 @@
 #define  __APP_H
 #include "stm32f10x.h"
 
-#define V_FAIL 0
-#define V_OK 1
+#define V_FAIL_1 1
+#define V_FAIL_2 2
+#define V_OK 0
 #define MID_VALUE	2048
 #define Z_MAX 2148
 #define Z_MIN 1948
 #define Z_LIMIT 15
-#define VRMS_MAX 1500
-#define VRMS_MIN 800
+#define VRMS_MAX_H 1479				//265
+#define VRMS_MAX_L 1451				//260
+#define VRMS_MIN_H 502				//90
+#define VRMS_MIN_L 474				//85
 
 extern __IO	u32 VRMS_A;
 extern __IO	u32 VRMS_B;
