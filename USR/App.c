@@ -192,7 +192,7 @@ void Voltage_Check(void)
 	{
 		LED_ON(LED_NS_Group ,LED_NS );																	//not sync
 	}
-	else if(sync_counter < 30)
+	else if((sync_counter < 30)|| (VB_Flag != V_OK) || (VA_Flag != V_OK))
 	{
 		LED_OFF(LED_NS_Group ,LED_NS );																	//sync or single Power.
 	}
