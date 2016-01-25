@@ -8,7 +8,7 @@
 #define MID_VALUE	2048
 #define Z_MAX 2148
 #define Z_MIN 1948
-#define Z_LIMIT 15
+#define Z_LIMIT 40						//because the total sample point increased so ...
 #define VRMS_MAX_H 1479				//265
 #define VRMS_MAX_L 1451				//260
 #define VRMS_MIN_H 502				//90
