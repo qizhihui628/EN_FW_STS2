@@ -22,7 +22,7 @@ __IO	u32 VRMS_OUT = 0;
 __IO  int32_t sync_counter = 0;
 
 __IO u8 Status_Flag = 0;
-__IO u8 SW_Flag = 0;
+__IO u8 SW_Flag = 1;
 __IO u8 VA_Flag = V_FAIL_1;
 __IO u8 VB_Flag = V_FAIL_1;
 
@@ -531,7 +531,7 @@ void SW_Status_Check(void)
 		T100us_Delay(20);		//delay for 2ms
 		if(SW_Flag != GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3))
 		{
-			SW_Flag = GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3);
+			SW_Flag = ~GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3);
 		}
 	}
 	else
