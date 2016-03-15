@@ -44,6 +44,48 @@
 
 
 /* Private functions ---------------------------------------------------------*/
+__IO uint32_t LsiFreq = 40000;
+void IWDG_Init(void)
+{
+	/* Check if the system has resumed from IWDG reset */
+  if (RCC_GetFlagStatus(RCC_FLAG_IWDGRST) != RESET)
+  {
+    /* IWDGRST flag set */
+    /* Turn on LED1 */
+
+    /* Clear reset flags */
+    RCC_ClearFlag();
+  }
+  else
+  {
+    /* IWDGRST flag is not set */
+    /* Turn off LED1 */
+  }
+	 /* IWDG timeout equal to 250 ms (the timeout may varies due to LSI frequency
+     dispersion) */
+  /* Enable write access to IWDG_PR and IWDG_RLR registers */
+  IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+
+  /* IWDG counter clock: LSI/32 */
+  IWDG_SetPrescaler(IWDG_Prescaler_32);
+
+  /* Set counter reload value to obtain 250ms IWDG TimeOut.
+     Counter Reload Value = 250ms/IWDG counter clock period
+                          = 250ms / (LSI/32)
+                          = 0.25s / (LsiFreq/32)
+                          = LsiFreq/(32 * 4)
+                          = LsiFreq/128
+													0.5s = 64
+													1s = 32
+   */
+  IWDG_SetReload(LsiFreq/32);
+
+  /* Reload IWDG counter */
+  IWDG_ReloadCounter();
+
+  /* Enable IWDG (the LSI oscillator will be enabled by hardware) */
+  IWDG_Enable();
+}
 
 /**
   * @brief  Main program.
@@ -58,8 +100,8 @@ int main(void)
        To reconfigure the default setting of SystemInit() function, refer to
        system_stm32f10x.c file
      */   
-		u32 i = 0;
-
+	u32 i = 0;
+	IWDG_Init();
 	
 	EN_GPIO_Init();
 	Relay_Status_No_Init();
@@ -82,8 +124,12 @@ int main(void)
 	//T100us_Delay(50000);
 	
   /* Infinite loop */
+	/* Reload IWDG counter */
+  IWDG_ReloadCounter(); 
   while (1)
   {
+		/* Reload IWDG counter */
+    IWDG_ReloadCounter(); 
 		Power12V_Check();
 		Voltage_Check();
 		//printf("VA is %d\r\n",VA_Flag);
@@ -101,6 +147,7 @@ if(SW_Flag)
 		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
 		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
 		LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+	
 		LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
 		LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
 		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
