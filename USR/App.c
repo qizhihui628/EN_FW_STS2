@@ -493,7 +493,7 @@ void STATUS_AOUT2_Pro_SW1(void)
 
 void Status_Process(void)
 {
-	if( SW_Flag == 0 )		//A for Pri
+	if( SW_Flag == 1 )		//A for Pri
 	{
 		switch (Status_Flag){
 		case STATUS_IDLE:	STATUS_IDLE_Pro_SW0(); break;
@@ -504,7 +504,7 @@ void Status_Process(void)
 		default:		Status_Flag = STATUS_IDLE;			break;
 		}
 	}
-	else if(SW_Flag == 1)	//B for Pri
+	else if(SW_Flag == 0)	//B for Pri
 	{
 		switch (Status_Flag){
 		case STATUS_IDLE:		STATUS_IDLE_Pro_SW1();break;
@@ -531,7 +531,7 @@ void SW_Status_Check(void)
 		T100us_Delay(20);		//delay for 2ms
 		if(SW_Flag != GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3))
 		{
-			SW_Flag = ~GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3);
+			SW_Flag = GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3);
 		}
 	}
 	else

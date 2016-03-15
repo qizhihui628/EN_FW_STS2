@@ -141,56 +141,6 @@ int main(void)
 			SW_Status_Check();
 		}
 		
-#if 0	
-if(SW_Flag)	
-{
-		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
-		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
-		LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
-	
-		LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
-		LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
-		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
-		LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
-		LED_OFF(LED_A_2_R_Group ,LED_A_2_R );
-		LED_OFF(LED_NS_Group ,LED_NS  );
-		LED_OFF(LED_ER_Group ,LED_ER );
-	
-		LED_ON(LED_A_1_R_Group ,LED_A_1_R );
-		LED_ON(LED_B_1_R_Group ,LED_B_1_R );
-		LED_ON(LED_B_2_R_Group ,LED_B_2_R );
-		LED_ON(LED_A_2_R_Group ,LED_A_2_R );
-		Signal_Relay_OFF();
-}
-else
-{
-		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
-		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
-		LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
-		LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
-		LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
-		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
-		LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
-		LED_OFF(LED_A_2_R_Group ,LED_A_2_R );
-		LED_OFF(LED_NS_Group ,LED_NS  );
-		LED_OFF(LED_ER_Group ,LED_ER );
-	
-	
-		LED_ON(LED_A_1_G_Group ,LED_A_1_G );
-		LED_ON(LED_B_1_G_Group ,LED_B_1_G );
-		LED_ON(LED_B_2_G_Group ,LED_B_2_G );
-		LED_ON(LED_A_2_G_Group ,LED_A_2_G );
-	
-		LED_ON(LED_NS_Group ,LED_NS  );
-		LED_ON(LED_ER_Group ,LED_ER );
-		Signal_Relay_ON();
-}
-
-		Relay_Status_A_Out_1();
-		T100us_Delay(50000);
-		Relay_Status_No_Init();
-		T100us_Delay(50000);
-#endif		
   /* Enable ADC1 DMA */									//SAMPLE 1 
   // ADC_DMACmd(ADC1, ENABLE);
 				//T100us_Delay(200);
