@@ -119,7 +119,7 @@ int main(void)
 	Timer2_Init();
 	ADC1_Init();
 	uart_init(115200);
-	printf("Helloworld!!\r\n");
+	//printf("Helloworld!!\r\n");
 
 	//T100us_Delay(50000);
 	
