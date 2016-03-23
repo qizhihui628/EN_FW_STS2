@@ -138,6 +138,8 @@ int main(void)
 		if( t1s_SW_counter < 500 )		//task tick.
 		{
 			t1s_SW_counter = 501;
+			/* Reload IWDG counter */
+			IWDG_ReloadCounter();
 			SW_Status_Check();
 		}
 		

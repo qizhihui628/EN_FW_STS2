@@ -6,6 +6,7 @@
 #include "Timer2.h"
 
 #define T1MS	1000
+#define T3MS	1000
 #define T2MS_MAX	50
 #define T2MS_MIN 	20
 #define VRMS_COUNTER_Max 5000			//4S to get the RMS Voltage.
@@ -40,6 +41,8 @@ void STATUS_BOUT1_Pro_SW0(void)
 {
 		Relay_ON_OFF_OFF_OFF();	//CLOSE B1 B2						
 		T100us_Delay(T2MS_MAX);					//WAIT FOR 5MS
+		Relay_Status_A_Out_1();
+		T100us_Delay(T3MS);				//WAIT FOR A2 READY
 		Status_Flag = STATUS_AOUT1;
 }
 void STATUS_AOUT1_Pro_SW1(void)
@@ -52,12 +55,12 @@ void Power12V_Check(void)
 {
 	if( (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)) && (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)) )
 	{
-		Signal_Relay_OFF();
+//		Signal_Relay_OFF();
 		LED_OFF(LED_ER_Group,LED_ER);
 	}
 	else
 	{
-		Signal_Relay_ON();
+//		Signal_Relay_ON();
 		LED_ON(LED_ER_Group,LED_ER);
 	}
 }
@@ -107,7 +110,7 @@ void Voltage_Check(void)
 	{
 		VA_Flag = V_FAIL_1;
 		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
-		LED_ON(LED_A_1_R_Group ,LED_A_1_R );
+		LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
 	}
 	else if ((VRMS_A < VRMS_MIN_L) || (VRMS_A > VRMS_MAX_H))		//V rms error need to bigger the delay time
 	{
@@ -153,7 +156,7 @@ void Voltage_Check(void)
 	{
 		VB_Flag = V_FAIL_1;
 		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
-		LED_ON(LED_B_1_R_Group ,LED_B_1_R );
+		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
 	}
 	else if((VRMS_B < VRMS_MIN_L) || (VRMS_B > VRMS_MAX_H))		//V rms error need to bigger the delay time
 	{
@@ -255,6 +258,8 @@ void STATUS_AOUT1_Pro_SW0(void)
 			{
 				T100us_Delay(T2MS_MAX);
 			}
+			Relay_Status_B_Out_2();
+			T100us_Delay(T3MS);				//WAIT FOR B2 READY
 			Status_Flag = STATUS_BOUT2;
 
 	}
@@ -292,7 +297,9 @@ void STATUS_AOUT2_Pro_SW0(void)
 			else
 			{
 				T100us_Delay(T2MS_MAX);
-			}		
+			}	
+			Relay_Status_B_Out_2();
+			T100us_Delay(T3MS);				//WAIT FOR B2 READY
 			Status_Flag = STATUS_BOUT2;
 	}
 	else																							//Idle
@@ -316,6 +323,8 @@ void STATUS_BOUT2_Pro_SW0(void)
 		T100us_Delay(T1MS);				//WAIT FOR A1 READY
 		Relay_ON_OFF_OFF_OFF();	//CLOSE B1 B2						
 		T100us_Delay(T2MS_MAX);					//WAIT FOR 4MS
+		Relay_Status_A_Out_1();
+		T100us_Delay(T3MS);				//WAIT FOR A2 READY
 		Status_Flag = STATUS_AOUT1;
 	}
 	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
@@ -330,6 +339,8 @@ void STATUS_BOUT2_Pro_SW0(void)
 		{
 			T100us_Delay(T2MS_MAX);
 		}		
+		Relay_Status_A_Out_2();
+		T100us_Delay(T3MS);				//WAIT FOR A2 READY
 		Status_Flag = STATUS_AOUT2;
 	}
 	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
@@ -528,7 +539,7 @@ void SW_Status_Check(void)
 	
 	if(SW_Flag != GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3))
 	{
-		T100us_Delay(20);		//delay for 2ms
+		T100us_Delay(2000);		//delay for 200ms
 		if(SW_Flag != GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3))
 		{
 			SW_Flag = GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3);
