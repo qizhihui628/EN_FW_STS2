@@ -49,6 +49,8 @@ void STATUS_AOUT1_Pro_SW1(void)
 {
 		Relay_OFF_OFF_ON_OFF();	//CLOSE B1 B2						
 		T100us_Delay(T2MS_MAX);					//WAIT FOR 5MS
+		Relay_Status_B_Out_1();
+		T100us_Delay(T3MS);				//WAIT FOR B2 READY
 		Status_Flag = STATUS_BOUT1;
 }
 void Power12V_Check(void)
@@ -414,6 +416,8 @@ void STATUS_BOUT1_Pro_SW1(void)
 		{
 			T100us_Delay(T2MS_MAX);
 		}
+		Relay_Status_A_Out_2();
+		T100us_Delay(T3MS);				//WAIT FOR B2 READY
 		Status_Flag = STATUS_AOUT2;
 	}
 	else																							//Idle
@@ -450,7 +454,9 @@ void STATUS_BOUT2_Pro_SW1(void)
 		else
 		{
 			T100us_Delay(T2MS_MAX);
-		}			
+		}		
+		Relay_Status_A_Out_2();
+		T100us_Delay(T3MS);				//WAIT FOR B2 READY
 		Status_Flag = STATUS_AOUT2;
 	}
 	else																							//Idle
@@ -474,6 +480,8 @@ void STATUS_AOUT2_Pro_SW1(void)
 		T100us_Delay(T1MS);				//
 		Relay_OFF_OFF_ON_OFF();	//				
 		T100us_Delay(T2MS_MAX);					//
+		Relay_Status_B_Out_1();
+		T100us_Delay(T3MS);				//WAIT FOR B2 READY
 		Status_Flag = STATUS_BOUT1;
 	}
 	else if((VA_Flag != V_OK)&&(VB_Flag == V_OK))		//Bout2
@@ -488,6 +496,8 @@ void STATUS_AOUT2_Pro_SW1(void)
 		{
 			T100us_Delay(T2MS_MAX);
 		}
+		Relay_Status_B_Out_2();
+		T100us_Delay(T3MS);				//WAIT FOR B2 READY
 		Status_Flag = STATUS_BOUT2;
 	}
 	else if((VA_Flag == V_OK)&&(VB_Flag != V_OK))		//Aout2
