@@ -7,7 +7,7 @@
 
 #define T1MS	1000
 #define T3MS	1000
-#define T2MS_MAX	50
+#define T2MS_MAX	42
 #define T2MS_MIN 	20
 #define VRMS_COUNTER_Max 5000			//4S to get the RMS Voltage.
 
@@ -40,7 +40,7 @@ enum Status_No{
 void STATUS_BOUT1_Pro_SW0(void)
 {
 		Relay_ON_OFF_OFF_OFF();	//CLOSE B1 B2						
-		T100us_Delay(T2MS_MAX);					//WAIT FOR 5MS
+		T100us_Delay(T2MS_MAX+10);					//WAIT FOR 5MS
 		Relay_Status_A_Out_1();
 		T100us_Delay(T3MS);				//WAIT FOR A2 READY
 		Status_Flag = STATUS_AOUT1;
@@ -48,7 +48,7 @@ void STATUS_BOUT1_Pro_SW0(void)
 void STATUS_AOUT1_Pro_SW1(void)
 {
 		Relay_OFF_OFF_ON_OFF();	//CLOSE B1 B2						
-		T100us_Delay(T2MS_MAX);					//WAIT FOR 5MS
+		T100us_Delay(T2MS_MAX+10);					//WAIT FOR 5MS
 		Relay_Status_B_Out_1();
 		T100us_Delay(T3MS);				//WAIT FOR B2 READY
 		Status_Flag = STATUS_BOUT1;
@@ -101,7 +101,7 @@ void Voltage_Check(void)
 	VRMS_A_temp = sqrt(temp1/(BUFFER_SIZE/3));
 		VRMS_A_Total = VRMS_A_Total + VRMS_A_temp;
 		VRMS_A_counter ++ ;
-		if(VRMS_A_counter > VRMS_COUNTER_Max)
+		if(VRMS_A_counter >= VRMS_COUNTER_Max)
 		{
 				VRMS_A_counter = 0;
 			VRMS_A = VRMS_A_Total/VRMS_COUNTER_Max;
@@ -147,7 +147,7 @@ void Voltage_Check(void)
 	VRMS_B_temp = sqrt(temp2/(BUFFER_SIZE/3));
 		VRMS_B_Total = VRMS_B_Total + VRMS_B_temp;
 		VRMS_B_counter ++ ;
-		if(VRMS_B_counter > VRMS_COUNTER_Max)
+		if(VRMS_B_counter >= VRMS_COUNTER_Max)
 		{
 				VRMS_B_counter = 0;
 			VRMS_B = VRMS_B_Total/VRMS_COUNTER_Max;
@@ -324,7 +324,7 @@ void STATUS_BOUT2_Pro_SW0(void)
 		Relay_ON_OFF_ON_ON();	//A1 ON
 		T100us_Delay(T1MS);				//WAIT FOR A1 READY
 		Relay_ON_OFF_OFF_OFF();	//CLOSE B1 B2						
-		T100us_Delay(T2MS_MAX);					//WAIT FOR 4MS
+		T100us_Delay(T2MS_MAX+20);					//WAIT FOR 4MS
 		Relay_Status_A_Out_1();
 		T100us_Delay(T3MS);				//WAIT FOR A2 READY
 		Status_Flag = STATUS_AOUT1;
@@ -479,7 +479,7 @@ void STATUS_AOUT2_Pro_SW1(void)
 		Relay_ON_ON_ON_OFF();	//
 		T100us_Delay(T1MS);				//
 		Relay_OFF_OFF_ON_OFF();	//				
-		T100us_Delay(T2MS_MAX);					//
+		T100us_Delay(T2MS_MAX+20);					//
 		Relay_Status_B_Out_1();
 		T100us_Delay(T3MS);				//WAIT FOR B2 READY
 		Status_Flag = STATUS_BOUT1;
@@ -517,21 +517,21 @@ void Status_Process(void)
 	if( SW_Flag == 1 )		//A for Pri
 	{
 		switch (Status_Flag){
-		case STATUS_IDLE:	STATUS_IDLE_Pro_SW0(); break;
-		case STATUS_AOUT1:	STATUS_AOUT1_Pro_SW0();  break;
-		case STATUS_AOUT2:	STATUS_AOUT2_Pro_SW0();  break;
-		case STATUS_BOUT2:	STATUS_BOUT2_Pro_SW0();  break;
-		case STATUS_BOUT1:STATUS_BOUT1_Pro_SW0();	break;
+		case STATUS_IDLE:		STATUS_IDLE_Pro_SW0();  Signal_Relay_ON(); break;
+		case STATUS_AOUT1:	STATUS_AOUT1_Pro_SW0(); Signal_Relay_OFF(); break;
+		case STATUS_AOUT2:	STATUS_AOUT2_Pro_SW0(); Signal_Relay_OFF(); break;
+		case STATUS_BOUT2:	STATUS_BOUT2_Pro_SW0(); Signal_Relay_ON(); break;
+		case STATUS_BOUT1:	STATUS_BOUT1_Pro_SW0();	break;
 		default:		Status_Flag = STATUS_IDLE;			break;
 		}
 	}
 	else if(SW_Flag == 0)	//B for Pri
 	{
 		switch (Status_Flag){
-		case STATUS_IDLE:		STATUS_IDLE_Pro_SW1();break;
-		case STATUS_AOUT2:	STATUS_AOUT2_Pro_SW1();break;
-		case STATUS_BOUT1:	STATUS_BOUT1_Pro_SW1();break;
-		case STATUS_BOUT2:	STATUS_BOUT2_Pro_SW1();break;
+		case STATUS_IDLE:		STATUS_IDLE_Pro_SW1(); Signal_Relay_ON();  break;
+		case STATUS_AOUT2:	STATUS_AOUT2_Pro_SW1(); Signal_Relay_ON(); break;
+		case STATUS_BOUT1:	STATUS_BOUT1_Pro_SW1(); Signal_Relay_OFF(); break;
+		case STATUS_BOUT2:	STATUS_BOUT2_Pro_SW1(); Signal_Relay_OFF(); break;
 		case STATUS_AOUT1:	STATUS_AOUT1_Pro_SW1();  break;
 		default:		Status_Flag = STATUS_IDLE;			break;
 		}	

@@ -9,10 +9,10 @@
 #define Z_MAX 2148
 #define Z_MIN 1948
 #define Z_LIMIT 50						//because the total sample point increased so ...
-#define VRMS_MAX_H 1479				//265
-#define VRMS_MAX_L 1451				//260
-#define VRMS_MIN_H 502				//90
-#define VRMS_MIN_L 474				//85
+#define VRMS_MAX_H 1226				//265 -> 268
+#define VRMS_MAX_L 1202				//260 -> 263
+#define VRMS_MIN_H 904			//195  ->	198
+#define VRMS_MIN_L 880				//190 -> 193
 
 extern __IO	u32 VRMS_A;
 extern __IO	u32 VRMS_B;
