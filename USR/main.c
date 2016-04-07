@@ -101,7 +101,7 @@ int main(void)
        system_stm32f10x.c file
      */   
 	u32 i = 0;
-	IWDG_Init();
+	//IWDG_Init();
 	
 	EN_GPIO_Init();
 	Relay_Status_No_Init();
@@ -125,16 +125,11 @@ int main(void)
 	
   /* Infinite loop */
 	/* Reload IWDG counter */
-  IWDG_ReloadCounter(); 
+ // IWDG_ReloadCounter(); 
   while (1)
   {
 		/* Reload IWDG counter */
-    IWDG_ReloadCounter(); 
-		Power12V_Check();
-		Voltage_Check();
-		//printf("VA is %d\r\n",VA_Flag);
-		//printf("VB is %d\r\n",VB_Flag);
-		Status_Process();
+   // IWDG_ReloadCounter(); 
 		if( t1s_SW_counter < 500 )		//task tick.
 		{
 			t1s_SW_counter = 501;
@@ -143,65 +138,55 @@ int main(void)
 			SW_Status_Check();
 		}
 		
-  /* Enable ADC1 DMA */									//SAMPLE 1 
-  // ADC_DMACmd(ADC1, ENABLE);
-				//T100us_Delay(200);
-		  /* Enable ADC1 */
-		  /* Enable ADC1 */
-  /* Enable ADC1 DMA */
-  //ADC_DMACmd(ADC1, DISABLE);
-																				//CACULATE
 
-		
-
-		
-	
-
-
-
-			
-			//SAMPLE 2 
-		 // ADC_DMACmd(ADC1, ENABLE);
-			//	T100us_Delay(200);
-		  /* Enable ADC1 */
-		  /* Enable ADC1 */
-			/* Enable ADC1 DMA */
-			//ADC_DMACmd(ADC1, DISABLE);
-#if 0		
-		for(i=0;i<990;)
-		{
-			printf("%03d:%d\r\n",i,ADCConvertedValue[i]);
-			i = i + 1;
-		}
-		
-#endif
-	//	printf("%d\r\n",temp);
-		//printf("%d\r\n",temp2);
-		//printf("%d\r\n",temp3);
-		//printf("%d\r\n",lv_counter);
-		
-
-
-#if 0		
-		T100us_Delay(50000);		//DELAY 20S
+		T100us_Delay(100000);		//DELAY 20S		
+		Relay_Status_A_Out_2();
+		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
+		LED_ON(LED_B_1_G_Group ,LED_B_1_G );
+		LED_ON(LED_B_2_G_Group ,LED_B_2_G );
+		LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+		LED_ON(LED_A_1_R_Group ,LED_A_1_R );
+		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
+		LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
+		LED_ON(LED_A_2_R_Group ,LED_A_2_R );
+		LED_OFF(LED_NS_Group ,LED_NS  );
+		LED_OFF(LED_ER_Group ,LED_ER );
+		T100us_Delay(100000);		//DELAY 20S			
 		Relay_Status_No_Init();
-		T100us_Delay(50000);
-		Relay_Status_No_Out();
-		T100us_Delay(50000);
-		Relay_Status_A_Out();
-		T100us_Delay(50000);		//DELAY 20S
-		Relay_Status_AtoB();
-		T100us_Delay(20);				//DELAY 20MS
-		Relay_Status_B_Out();
-		T100us_Delay(50000);		//DELAY 20S		
-		Relay_Status_BtoA();
-		T100us_Delay(20);				//DELAY 20MS	
-		Relay_Status_A_Out();		
-		//T100us_Delay(200000);		//DELAY 20S		
-#endif
-		
-		
-
+		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
+		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
+		LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+		LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+		LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
+		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
+		LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
+		LED_OFF(LED_A_2_R_Group ,LED_A_2_R );
+		LED_ON(LED_NS_Group ,LED_NS  );
+		LED_ON(LED_ER_Group ,LED_ER );
+		T100us_Delay(100000);		//DELAY 20S	
+		Relay_Status_B_Out_2();	
+		LED_ON(LED_A_1_G_Group ,LED_A_1_G );
+		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
+		LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+		LED_ON(LED_A_2_G_Group ,LED_A_2_G );
+		LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
+		LED_ON(LED_B_1_R_Group ,LED_B_1_R );
+		LED_ON(LED_B_2_R_Group ,LED_B_2_R );
+		LED_OFF(LED_A_2_R_Group ,LED_A_2_R );
+		LED_OFF(LED_NS_Group ,LED_NS  );
+		LED_OFF(LED_ER_Group ,LED_ER );
+		T100us_Delay(100000);		//DELAY 20S			
+		Relay_Status_No_Init();
+		LED_OFF(LED_A_1_G_Group ,LED_A_1_G );
+		LED_OFF(LED_B_1_G_Group ,LED_B_1_G );
+		LED_OFF(LED_B_2_G_Group ,LED_B_2_G );
+		LED_OFF(LED_A_2_G_Group ,LED_A_2_G );
+		LED_OFF(LED_A_1_R_Group ,LED_A_1_R );
+		LED_OFF(LED_B_1_R_Group ,LED_B_1_R );
+		LED_OFF(LED_B_2_R_Group ,LED_B_2_R );
+		LED_OFF(LED_A_2_R_Group ,LED_A_2_R );
+		LED_ON(LED_NS_Group ,LED_NS  );
+		LED_ON(LED_ER_Group ,LED_ER );
   }
 }
 
