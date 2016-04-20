@@ -119,89 +119,19 @@ int main(void)
 	Timer2_Init();
 	ADC1_Init();
 	uart_init(115200);
-	//printf("Helloworld!!\r\n");
-
-	//T100us_Delay(50000);
-	
-  /* Infinite loop */
-	/* Reload IWDG counter */
   IWDG_ReloadCounter(); 
   while (1)
   {
-		/* Reload IWDG counter */
     IWDG_ReloadCounter(); 
 		Power12V_Check();
 		Voltage_Check();
-		//printf("VA is %d\r\n",VA_Flag);
-		//printf("VB is %d\r\n",VB_Flag);
 		Status_Process();
-		if( t1s_SW_counter < 500 )		//task tick.
+		if( t1s_SW_counter < 500 )
 		{
 			t1s_SW_counter = 501;
-			/* Reload IWDG counter */
 			IWDG_ReloadCounter();
 			SW_Status_Check();
 		}
-		
-  /* Enable ADC1 DMA */									//SAMPLE 1 
-  // ADC_DMACmd(ADC1, ENABLE);
-				//T100us_Delay(200);
-		  /* Enable ADC1 */
-		  /* Enable ADC1 */
-  /* Enable ADC1 DMA */
-  //ADC_DMACmd(ADC1, DISABLE);
-																				//CACULATE
-
-		
-
-		
-	
-
-
-
-			
-			//SAMPLE 2 
-		 // ADC_DMACmd(ADC1, ENABLE);
-			//	T100us_Delay(200);
-		  /* Enable ADC1 */
-		  /* Enable ADC1 */
-			/* Enable ADC1 DMA */
-			//ADC_DMACmd(ADC1, DISABLE);
-#if 0		
-		for(i=0;i<990;)
-		{
-			printf("%03d:%d\r\n",i,ADCConvertedValue[i]);
-			i = i + 1;
-		}
-		
-#endif
-	//	printf("%d\r\n",temp);
-		//printf("%d\r\n",temp2);
-		//printf("%d\r\n",temp3);
-		//printf("%d\r\n",lv_counter);
-		
-
-
-#if 0		
-		T100us_Delay(50000);		//DELAY 20S
-		Relay_Status_No_Init();
-		T100us_Delay(50000);
-		Relay_Status_No_Out();
-		T100us_Delay(50000);
-		Relay_Status_A_Out();
-		T100us_Delay(50000);		//DELAY 20S
-		Relay_Status_AtoB();
-		T100us_Delay(20);				//DELAY 20MS
-		Relay_Status_B_Out();
-		T100us_Delay(50000);		//DELAY 20S		
-		Relay_Status_BtoA();
-		T100us_Delay(20);				//DELAY 20MS	
-		Relay_Status_A_Out();		
-		//T100us_Delay(200000);		//DELAY 20S		
-#endif
-		
-		
-
   }
 }
 
